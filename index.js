@@ -16,59 +16,40 @@ server.on('message', (msg, senderInfo) => {
         JsonResive=JSON.parse(msg);
         for(var key in JsonResive){
             if(JsonResive[key]=="ADD"){
-                console.log("Checking if socket is add..");
-                sockets.includes();
+                console.log("Checking if socket is add..",JsonResive["Socket"]);
+                if(!sockets.includes(JsonResive["Socket"])){
+                    sockets.push(JsonResive["Socket"]);
+                }else{
+                    console.log("Socket is allready used..");
+                }
+            }
+            if(JsonResive[key]=="CLOSE"){
+                console.log("Checking if socket EXIS..",JsonResive["Socket"]);
+                if(!sockets.includes(JsonResive["Socket"])){
+                    console.log("Socket not exist in this context...");
+                }else{
+                    indexSocket = sockets.findIndex(sockets => sockets === JsonResive["Socket"]);
+                    console.log(indexSocket);
+                    sockets.splice(indexSocket, 1);
+                }
+            }
+            if(JsonResive[key]=="Message"){
+                try {
+                 console.log(JsonResive);
+                } catch (error) {
+                    
+                    console.error(error)
+                }
             }
         }
+        const JSONStrings=JSON.stringify(JsonResive);
+        
+        server.send("Perro",PORT,TVIP,()=>{
+            server.send(JSONStrings,PORT,TVIP,()=>{
+                console.log(`Its sending...`);
+            });
+        });
     }
-
-
-    // try{    
-    
-    // for(var key in s){
-    //     if(s[key]=="TV"){
-    //         console.log("This TV.. SAVE IP");
-    //         TVIP=senderInfo.address;
-    //         PORT=senderInfo.port;
-    //         console.log(TVIP);
-    //     }       
-    // }}catch(x){
-
-    // }
-    // try{
-    // for(var key in s){
-    //     MESSAGES=s[key];
-    //     if(MESSAGES!=="TV"){
-    //         send={
-    //             "Action":"Vector3",
-    //             "Input":MESSAGES
-    //         }
-
-    //     }else{
-    //         send={
-    //             "Action":"Message",
-    //             "Input":MESSAGES
-    //         }
-
-    //     }
-    // }}
-    // catch(x){
-    //     MESSAGES=senderInfo.address
-    //     send={
-    //         "Action":"Message",
-    //         "Input":MESSAGES
-    //     }
-
-    // }
-
-    // const xas=JSON.stringify(send);
-    // server.send("Perro",PORT,TVIP,()=>{
-    //     server.send(xas,PORT,TVIP,()=>{
-    //         console.log(`kill th`)
-    //     });
-    // });
-
-    // console.log(senderInfo);
 );
 
 server.on('listening', () => {
