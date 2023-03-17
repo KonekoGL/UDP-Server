@@ -25,19 +25,20 @@ server.on('message', (msg, senderInfo) => {
             }
             if(JsonResive[key]=="CLOSE"){
                 console.log("Checking if socket EXIS..",JsonResive["Socket"]);
+                console.log("Socket:",sockets);
                 if(!sockets.includes(JsonResive["Socket"])){
                     console.log("Socket not exist in this context...");
                 }else{
                     indexSocket = sockets.findIndex(sockets => sockets === JsonResive["Socket"]);
                     console.log(indexSocket);
                     sockets.splice(indexSocket, 1);
+                    console.log("Socket:",sockets);
                 }
             }
             if(JsonResive[key]=="Message"){
                 try {
-                 console.log(JsonResive);
+                    // console.log(JsonResive);
                 } catch (error) {
-                    
                     console.error(error)
                 }
             }
@@ -46,7 +47,7 @@ server.on('message', (msg, senderInfo) => {
         
         server.send("Perro",PORT,TVIP,()=>{
             server.send(JSONStrings,PORT,TVIP,()=>{
-                console.log(`Its sending...`);
+                // console.log(`Its sending...`);
             });
         });
     }
@@ -56,11 +57,10 @@ server.on('listening', () => {
     const address = server.address();
     console.log(`server listening on ${address.address}:${address.port}`);
     try {
-        server.send("SERVER LISTENER!",PORT,TVIP,()=>{
-            console.log(`Its sending...`)
-        });
         server.send("Perro",PORT,TVIP,()=>{
-            console.log(`Send kill`)
+            server.send("Connecting Server...",PORT,TVIP,()=>{
+                console.log(`Its sending...`);
+            });
         });
     } catch (error) {
         console.error(error)
