@@ -7,9 +7,10 @@ server.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
     server.close();
 });
+//PORT AND CONNECTION TO SEND DATA (TV MAYBE)...
 let TVIP="127.0.0.1";
-let PORT="3020";
-let MESSAGES="";
+let PORT="3034";
+//
 let sockets=[];
 server.on('message', (msg, senderInfo) => {
         console.log('Messages received '+ msg)
@@ -44,28 +45,32 @@ server.on('message', (msg, senderInfo) => {
             }
         }
         const JSONStrings=JSON.stringify(JsonResive);
-        
-        server.send("Perro",PORT,TVIP,()=>{
-            server.send(JSONStrings,PORT,TVIP,()=>{
-                // console.log(`Its sending...`);
-            });
-        });
+        server.send(JSONStrings,PORT,TVIP);
     }
 );
 
+//Listener if server is working and Send Status..
 server.on('listening', () => {
     const address = server.address();
+    let json={
+        "Action":"Status",
+        "isListener":"true"
+    }
+    const JSONStrings=JSON.stringify(json);
     console.log(`server listening on ${address.address}:${address.port}`);
     try {
-        server.send("Perro",PORT,TVIP,()=>{
-            server.send("Connecting Server...",PORT,TVIP,()=>{
-                console.log(`Its sending...`);
-            });
+        server.send(JSONStrings,PORT,TVIP,()=>{
+            console.log(JSONStrings);
         });
     } catch (error) {
         console.error(error)
     }
-
 });
+
+//Check if Disconect player (dont listener);
+server.on("close",()=>{
+    console.log("Disconnected!");
+});
+
 
 server.bind(5500);
